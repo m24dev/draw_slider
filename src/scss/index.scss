@@ -1,0 +1,61 @@
+@import '~sanitize.css/sanitize.css';
+@import '~tiny-slider/src/tiny-slider.scss';
+
+html,
+body {
+    overflow: hidden;
+    height: 100%;
+    background: #252525;
+}
+
+.btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 100px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    z-index: 20;
+}
+
+.slider {
+    height: 100%;
+    .slider__item {
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        background-size: contain;
+    }
+}
+
+.tns-outer,
+.tns-ovh,
+.tns-inner,
+.tns-item {
+    height: 100%;
+}
+.tns-controls {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    button {
+        position: absolute;
+        top: 0;
+        width: 100px;
+        height: 100%;
+        padding: 0;
+        background: transparent;
+        border: none;
+        outline: none;
+    }
+    [data-controls="prev"] {
+        left: 0;
+    }
+    [data-controls="next"] {
+        right: 0;
+    }
+}
