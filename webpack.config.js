@@ -57,7 +57,10 @@ module.exports = env => {
             new HtmlWebpackPlugin({
                 template: './src/index.ejs',
                 filename: 'index.html',
-                isDev: isDev
+                isDev: isDev,
+                minify: {
+					collapseWhitespace: false
+				}
             }),
             new MiniCssExtractPlugin({
 				filename: 'css/[name].[contenthash].css'
