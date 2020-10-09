@@ -11,7 +11,7 @@ module.exports = env => {
             main: './src/js/index.js'
         },
         output: {
-            filename: 'js/[name].[contenthash].js',
+            filename: 'js/[name].js',
             path: path.resolve(__dirname, 'docs')
         },
         devtool: isDev ? 'cheap-module-source-map' : 'none',
@@ -63,7 +63,7 @@ module.exports = env => {
 				}
             }),
             new MiniCssExtractPlugin({
-				filename: 'css/[name].[contenthash].css'
+				filename: 'css/[name].css'
 			})
         ]
     }

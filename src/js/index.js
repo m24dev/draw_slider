@@ -9,6 +9,10 @@ class Canvas {
         this.lineWidth = 8;
         this.color = '#ff0000';
         this.ongoingTouches = [];
+        this.isDrawing = false;
+        this.x = 0;
+        this.y = 0;
+        this.previous = null;
 
         this.setSizes();
 
@@ -17,10 +21,15 @@ class Canvas {
         el.addEventListener('touchend', (e) => this.handleTouchEnd(e), false);
         el.addEventListener('touchcancel', (e) => this.handleTouchCancel(e), false);
 
+        el.addEventListener('mousedown', (e) => this.handleMouseDown(e), false);
+        el.addEventListener('mousemove', (e) => this.handleMouseMove(e), false);
+        el.addEventListener('mouseup', (e) => this.handleMouseUp(e), false);
+
         window.addEventListener('resize', () => this.setSizes(), false);
     }
     handleTouchStart(e) {
         e.preventDefault();
+        this.previous = this.ctx.getImageData(0, 0, this.el.width, this.el.height);
         const touches = e.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             this.ongoingTouches.push(this.copyTouch(touches[i]))
@@ -81,6 +90,36 @@ class Canvas {
         }
         return -1;
     }
+    handleMouseDown(e) {
+        this.previous = this.ctx.getImageData(0, 0, this.el.width, this.el.height);
+        this.x = e.offsetX;
+        this.y = e.offsetY;
+        this.isDrawing = true;
+    }
+    handleMouseMove(e) {
+        if (this.isDrawing === true) {
+            this.drawLine(this.ctx, this.x, this.y, e.offsetX, e.offsetY);
+            this.x = e.offsetX;
+            this.y = e.offsetY;
+        }
+    }
+    handleMouseUp(e) {
+        if (this.isDrawing === true) {
+            this.drawLine(this.ctx, this.x, this.y, e.offsetX, e.offsetY);
+            this.x = 0;
+            this.y = 0;
+            this.isDrawing = false;
+        }
+    }
+    drawLine(context, x1, y1, x2, y2) {
+        context.beginPath();
+        context.strokeStyle = this.color;
+        context.lineWidth = this.lineWidth;
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
+        context.closePath();
+    }
     setSizes() {
         const rect = document.body.getBoundingClientRect();
         this.el.width = rect.width;
@@ -91,17 +130,47 @@ class Canvas {
 class App {
     constructor() {
         this.$toggleFullScreenBtn = document.querySelector('.btn_togglefullscreen');
+        this.$undoBtns = document.querySelectorAll('.btn_undo');
+        this.$clearBtns = document.querySelectorAll('.btn_clear');
         this.$slider = document.querySelector('.slider');
         this.w = 0;
         this.h = 0;
+        this.drawings = [];
 
         this.setSizes();
 
-        window.addEventListener('resize', () => this.setSizes(), false);
-    }
-    handleToggleFullScreenClick() {
         this.$toggleFullScreenBtn.addEventListener('click', () => {
             this.toggleFullScreen();
+        });
+
+        this.$clearBtns.forEach($btn => {
+            $btn.addEventListener('click', (e) => {
+                const slide = e.currentTarget.parentNode;
+                const canvas = slide.querySelector('canvas');
+                this.clear(canvas);
+            });
+        });
+
+        this.$undoBtns.forEach($btn => {
+            $btn.addEventListener('click', (e) => {
+                const slide = e.currentTarget.parentNode;
+                const canvas = slide.querySelector('canvas');
+                this.undo(canvas);
+            });
+        });
+
+        window.addEventListener('resize', () => this.setSizes(), false);
+    }
+    clear(canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    undo(canvas) {
+        const ctx = canvas.getContext('2d');
+        this.drawings.map(drawing => {
+            if (drawing.el === canvas) {
+                ctx.putImageData(drawing.previous, 0, 0);
+            }
         });
     }
     toggleFullScreen() {
@@ -117,23 +186,29 @@ class App {
         else {
           cancelFullScreen.call(doc);
         }
-      }
-      
+    }
+    handleUndoClick() {
+        
+    }
+    handleClearClick() {
+        this.$clearBtns.forEach($btn => {
+            $btn
+        });
+    }
     initCarousel() {
         let slider = tns({
             container: this.$slider,
             items: 1,
-            controlsText: ['',''],
             nav: false,
             autoplay: false,
             touch: false,
-            swipeAngle: 30,
+            rewind: true,
             onInit: el => {
-                el.prevButton.style.height = `${this.h}px`;
-                el.nextButton.style.height = `${this.h}px`;
+                el.prevButton.style.height = `${this.h - 200}px`;
+                el.nextButton.style.height = `${this.h - 200}px`;
                 Array.from(el.slideItems).forEach(slide => {
                     const $canvas = slide.querySelector('canvas');
-                    new Canvas($canvas);
+                    this.drawings.push(new Canvas($canvas));
                 })
             }
         });
@@ -145,7 +220,6 @@ class App {
     }
     init() {
         this.initCarousel();
-        this.handleToggleFullScreenClick();
     } 
 }
 
