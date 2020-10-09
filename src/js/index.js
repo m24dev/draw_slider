@@ -6,8 +6,8 @@ class Canvas {
     constructor(el) {
         this.el = el;
         this.ctx = el.getContext('2d');
-        this.lineWidth = 8;
-        this.color = '#ff0000';
+        this.lineWidth = this.el.dataset.width || 8;
+        this.color = this.el.dataset.color || '#a83232';
         this.ongoingTouches = [];
         this.isDrawing = false;
         this.x = 0;
