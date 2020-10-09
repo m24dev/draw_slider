@@ -181,7 +181,9 @@ class App {
         const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
       
         if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-          requestFullScreen.call(docEl);
+            requestFullScreen.call(docEl, {
+                navigationUI: 'hide'
+            });
         }
         else {
           cancelFullScreen.call(doc);
