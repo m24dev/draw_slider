@@ -34,7 +34,7 @@ class Canvas {
         for (let i = 0; i < touches.length; i++) {
             this.ongoingTouches.push(this.copyTouch(touches[i]))
             this.ctx.beginPath();
-            this.ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);
+            this.ctx.arc(touches[i].pageX, touches[i].pageY, 0, 0, 2 * Math.PI, false);
             this.ctx.fillStyle = this.color;
             this.ctx.fill();
         }
