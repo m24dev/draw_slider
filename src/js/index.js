@@ -189,14 +189,6 @@ class App {
           cancelFullScreen.call(doc);
         }
     }
-    handleUndoClick() {
-        
-    }
-    handleClearClick() {
-        this.$clearBtns.forEach($btn => {
-            $btn
-        });
-    }
     initCarousel() {
         let slider = tns({
             container: this.$slider,
