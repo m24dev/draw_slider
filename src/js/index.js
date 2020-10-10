@@ -50,6 +50,7 @@ class Canvas {
                 this.ctx.lineTo(touches[i].pageX, touches[i].pageY);
                 this.ctx.lineWidth = this.lineWidth;
                 this.ctx.strokeStyle = this.color;
+                this.ctx.lineCap  = 'round';
                 this.ctx.stroke();
                 this.ongoingTouches.splice(idx, 1, this.copyTouch(touches[i]));
             }
@@ -115,6 +116,7 @@ class Canvas {
         context.beginPath();
         context.strokeStyle = this.color;
         context.lineWidth = this.lineWidth;
+        context.lineCap  = 'round';
         context.moveTo(x1, y1);
         context.lineTo(x2, y2);
         context.stroke();
@@ -211,6 +213,13 @@ class App {
         const rect = document.body.getBoundingClientRect();
         this.w = rect.width;
         this.h = rect.height;
+
+        const $prevBtn = document.querySelector("[data-controls='prev']");
+        const $nextBtn = document.querySelector("[data-controls='next']");
+        if ($prevBtn && $nextBtn) {
+            $prevBtn.style.height = `${this.h - 200}px`;
+            $nextBtn.style.height = `${this.h - 200}px`;
+        }
     }
     init() {
         this.initCarousel();
